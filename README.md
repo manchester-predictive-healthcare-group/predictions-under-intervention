@@ -1,1 +1,1 @@
-# Making-predictions-under-hypothetical-intervention
+# Making predictions under hypothetical intervention
