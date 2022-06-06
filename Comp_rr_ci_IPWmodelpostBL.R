@@ -14,14 +14,14 @@ source("EffectEstimate_IPW_postBL.R")
 
 
 
-# DATA = read.csv('data_for_postBLTreatment_2years_addSelectionWeight.csv')
-# fname <- paste0(outDir, 'IP_2years_boots_RR_LL_UL.csv')
+DATA = read.csv('data_for_postBLTreatment_2years_addSelectionWeight.csv')
+fname <- paste0(outDir, 'IP_postBL_2years_boots_RR_LL_UL.csv')
 
 # DATA = read.csv('data_for_postBLTreatment_2ndVisit_addSelectionWeight.csv')
-# fname <- paste0(outDir, 'IP_2ndVisit_boots_RR_LL_UL.csv')
+# fname <- paste0(outDir, 'IP_postBL_2ndVisit_boots_RR_LL_UL.csv')
 
+boots <- data.frame(i = 1:10, row.name = NA, RR = NA, SE =NA, LL = NA, UL = NA)
 
-RR_CI = data.frame(row.names = c('RR','SE','LL','UL'))
 
 for (treatment in c('smoking','sbp','cholesterol')){
   
@@ -42,18 +42,11 @@ for (treatment in c('smoking','sbp','cholesterol')){
             
             ## bootstraping for getting CI for RR
             N = nrow(data_sub)
-             
-             
-            
-            boots <- data.frame(i = 1:N, RR = NA, SE =NA, LL = NA, UL = NA)
-            
-            fname <- paste0(outDir, 'IPW_RR_boots_',treatment,'_',treatType,
-                            ifelse(ifFullModel,'_full','_interm'), '.csv')
-            cat(fname,'\n')
-            
+
             d <- copy(data_sub)
             d <- getTreatW(d,treatment,ifFullModel)
             d <- getCensW(d,treatment)
+            
             results <- boot(data=d,statistic = getRR,R=500)
             m = results$t0
             se <- sd(results$t[,1])
@@ -64,19 +57,9 @@ for (treatment in c('smoking','sbp','cholesterol')){
             boots[i,'LL'] = ll
             boots[i,'UL'] = ul
  
-            
-            write.csv(boots, fname,row.names = FALSE)
-            
-            res  = as.data.frame(apply(boots[,c(-1)],2, function(x) exp(mean(log(x)))))
-            
-            colnames(res) = paste0(treatment,'_',treatType,
+           
+            boots[i,'row.names'] = paste0(treatment,'_',treatType,
                            ifelse(ifFullModel,'_full','_interm')) 
-            
-            
-            RR_CI = merge(RR_CI,res,by = 'row.names')  
-            rownames(RR_CI) = RR_CI$Row.names
-            RR_CI$Row.names = NULL
-            
 
         }
     }
@@ -84,5 +67,5 @@ for (treatment in c('smoking','sbp','cholesterol')){
 
 
 
-write.csv(RR_CI[c('SE','RR','LL','UL'),],fname,row.names = TRUE)
+write.csv(boots,fname,row.names = TRUE)
 
