@@ -1,15 +1,22 @@
 # Making predictions under hypothetical intervention
 
 
-### refitPREDICT.R
+#### refitPREDICT.R
+Refitted PREDICT Model
 
-Comp_rr_ci_IPWmodel_BL.R
+#### EffectEstimate_IPW_BL.R
+Approach (b1): estimate treatment effect using baseline data only
 
-Comp_rr_ci_IPWmodelpostBL.R
+#### EffectEstimate_IPW_postBL.R
+Approach (b2): estimate treatment effect using post-baseline data 
 
-Comp_rr_ci_refitPREDICT.R
+#### Comp_rr_ci_IPWmodel_BL.R
+Compute relative risk (RR) and CI for effects estimated from approach  (b1)
 
-EffectEstimate_IPW_BL.R
+#### Comp_rr_ci_IPWmodelpostBL.R
+Compute relative risk (RR) and CI for effects estimated from approach  (b2)
 
-EffectEstimate_IPW_postBL.R
+#### Comp_rr_ci_refitPREDICT.R
+
+Compute relative risk (RR) and CI for effects estimated from non-causal approach (a)
 
