@@ -1,11 +1,14 @@
 library(data.table)
 library(plyr)
 library(survival)
-
-
-
+ 
 DATA <- read.csv('data_for_refitPredict.csv')
  
+DATA[, indexDate:= as.Date(view_visit_date)]
+
+# Note: 
+# There are patients in this record who may never came for a follow-up;
+# So we assumed these patients do not have CVD 
 
 dataF <- DATA[FEM==1,c('VSIMPLE_INDEX_MASTER',
                        'survtime',
@@ -38,9 +41,9 @@ dataM <- DATA[MAL==1,c('VSIMPLE_INDEX_MASTER',
                        'cur_smoke' ,
                        'imp_hx_diabetes' ,
                        'imp_hx_af' ,
-                       'pt_familyhistory'  ,
-                       'sbp.c', 'sbp',
-                        'imp_index2y_tchdl_ratio',
+                       'pt_familyhistory' ,
+                       'sbp',
+                       'imp_index2y_tchdl_ratio',
                        'imp_hx_lipidlowering' ,
                        'imp_hx_antithrombotics' ,
                        'imp_hx_antihypertensives')] 
