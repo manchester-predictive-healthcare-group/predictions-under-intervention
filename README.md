@@ -2,8 +2,8 @@
 
  
  
-| R        | Description                      |
-|-----------| ----------------------------------|
+| R   files        | Description                      |
+|----------------------| ----------------------------------|
 | ``refitPREDICT.R``| Refitted PREDICT Model|
 | ``EffectEstimate_IPW_BL.R``| Approach (b1): estimate treatment effect using baseline data only|
 | ``EffectEstimate_IPW_postBL.R``| Approach (b2): estimate treatment effect using post-baseline data |
