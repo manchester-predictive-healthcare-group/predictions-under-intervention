@@ -261,5 +261,102 @@ getRR <- function(data,indices){
 
 
 
+getSubData <- function(data,treatment,treatType){
+  
+  strict = 'no'  # stricter def of treatment; effect reinforced
+  
+  # table(DATA$censorNoRec)
+  # head(DATA,2)
+  DATA <- copy(data)
+  setDT(DATA)
+  useSectionWeight = TRUE
+  
+  
+  
+  
+  if (treatment == 'smoking'){
+    # keep only current smokesr or ex-smokers 
+    keep <- DATA$nv_smoke!=1
+  }
+  
+  if (treatment== 'sbp'){
+    
+    if (treatType == 'level'){
+      keep <- !((DATA$sbp < 140) & (DATA$sbp > 130))}
+    else if  (treatType == 'medication'){
+      keep <- !((DATA$sbp < 140) & (DATA$imp_hx_antihypertensives == 0))}
+  }
+  
+  if (treatment== 'cholesterol'){
+    if (treatType == 'level'){
+      keep <- !((DATA$imp_index2y_tchdl_ratio <5) & (DATA$imp_index2y_tchdl_ratio > 3.5))}
+    else if  (treatType == 'medication'){
+      keep  <- !((DATA$imp_index2y_tchdl_ratio <5) & (DATA$imp_hx_lipidlowering == 0))
+      
+    }
+  }
+  
+  
+  
+  
+  
+  data_sub = DATA[keep,c('VSIMPLE_INDEX_MASTER',
+                         'survtime', 'pt_en_bmi',
+                         'cvd', 'censored',
+                         'FEM', 'MAL',
+                         'view_ag_sex',
+                         'view_ag_age' ,
+                         'asian','indian','maori','pacific','european',
+                         'view_en_nzdep',
+                         'ex_smoke' ,
+                         'cur_smoke' ,
+                         'pt_diabetes' ,
+                         'pt_atrial_fibrillation' ,
+                         'obplm','ollm','oatm',
+                         'pt_familyhistory' ,
+                         'imp_hx_diabetes' ,
+                         'imp_hx_af' ,
+                         'imp_hx_lipidlowering' ,
+                         'imp_hx_antithrombotics' ,
+                         'imp_hx_antihypertensives' ,
+                         'sbp' , 
+                         'imp_index2y_tchdl_ratio')]
+  rm(DATA)
+  
+  
+  if (treatment == 'smoking'){
+    data_sub$treat <- data_sub$ex_smoke
+  }
+  
+  if (treatment== 'sbp'){
+    if (treatType == 'level'){
+      data_sub$treat <- (data_sub$sbp <=130)*1
+    }else if (treatType == 'medication'){
+      if (strict == 'yes'){ 
+        data_sub$treat <- 1* (data_sub$imp_hx_antihypertensives & (data_sub$sbp<=130))
+      else{
+        data_sub$treat <- 1* data_sub$imp_hx_antihypertensives  
+      }
+    }
+    }
+  }
+  
+    
+  if (treatment== 'cholesterol'){
+    if (treatType == 'level'){
+      data_sub$treat <-( data_sub$imp_index2y_tchdl_ratio <=3.5)*1
+      }else if  (treatType == 'medication'){
+        if (strict == 'yes'){
+          data_sub$treat <- 1*( data_sub$imp_hx_lipidlowering & (data_sub$imp_index2y_tchdl_ratio <=3.5) )
+        }else{
+          data_sub$treat <- data_sub$imp_hx_lipidlowering
+     }
+      }
+  }
+  
+  
+  
+  return(data_sub)
+  }
 
       
